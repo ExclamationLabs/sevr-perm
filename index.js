@@ -15,7 +15,14 @@ module.exports = (ichabod, _config) => {
 	}
 
 	ichabod.authentication.events.on('auth-enabled', () => {
+		// Add the role field to the auth collection
+		ichabod.authentication.collection.addField('role', 'Role', {
+			type: String,
+			enum: Object.keys(config.roles)
+		})
 
+		// Apply middleware for each collection to check operation permissions
+		// for the active user
 		Object.keys(ichabod.collections)
 			.map(c => {
 				return ichabod.collections[c]
