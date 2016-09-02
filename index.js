@@ -10,18 +10,21 @@ module.exports = (ichabod, _config) => {
 	const config = mergeWith({}, defaultConfig, _config)
 	const library = Library(Ichabod, config)
 
+	const getUser = () => {
+		return ichabod.authentication.user || { role: constants.DEFAULT_PROP }
+	}
+
 	ichabod.authentication.events.on('auth-enabled', () => {
-		const user = ichabod.authentication.user || { role: constants.DEFAULT_PROP }
 
 		Object.keys(ichabod.collections)
 			.map(c => {
 				return ichabod.collections[c]
 			})
 			.forEach(collection => {
-				collection.useBefore('create', library.getRoleCheck(user, collection.name, 'create'))
-				collection.useBefore('read', library.getRoleCheck(user, collection.name, 'read'))
-				collection.useBefore('update', library.getRoleCheck(user, collection.name, 'update'))
-				collection.useBefore('delete', library.getRoleCheck(user, collection.name, 'delete'))
+				collection.useBefore('create', library.getRoleCheck(getUser, collection.name, 'create'))
+				collection.useBefore('read', library.getRoleCheck(getUser, collection.name, 'read'))
+				collection.useBefore('update', library.getRoleCheck(getUser, collection.name, 'update'))
+				collection.useBefore('delete', library.getRoleCheck(getUser, collection.name, 'delete'))
 			})
 	})
 }

@@ -97,9 +97,10 @@ describe('Library', function() {
 					}
 				}
 			}
+			const getUser1 = () => ({ role: 'user' })
 			const library = Library(IchabodMock, config)
-			const fn1 = library.getRoleCheck({ role: 'user' }, 'coll1', 'read')
-			const fn2 = library.getRoleCheck({ role: 'user' }, 'coll2', 'update')
+			const fn1 = library.getRoleCheck(getUser1, 'coll1', 'read')
+			const fn2 = library.getRoleCheck(getUser1, 'coll2', 'update')
 
 			expect(fn1('query')).to.eql('query')
 			expect(fn2('query')).to.eql('query')
@@ -114,10 +115,12 @@ describe('Library', function() {
 					}
 				}
 			}
+			const getUser1 = () => ({ role: 'user' })
+			const getUser2 = () => ({ role: 'web' })
 			const library = Library(IchabodMock, config)
-			const fn1 = library.getRoleCheck({ role: 'user' }, 'coll1', 'create')
-			const fn2 = library.getRoleCheck({ role: 'web' }, 'coll1', 'create')
-			const fn3 = library.getRoleCheck({ role: 'user' }, 'coll2', 'create')
+			const fn1 = library.getRoleCheck(getUser1, 'coll1', 'create')
+			const fn2 = library.getRoleCheck(getUser2, 'coll1', 'create')
+			const fn3 = library.getRoleCheck(getUser1, 'coll2', 'create')
 
 			expect(fn1).to.throw('[ichabod-perm] User does not have "create" access for collection "coll1"')
 			expect(fn2).to.throw('[ichabod-perm] User does not have "create" access for collection "coll1"')
