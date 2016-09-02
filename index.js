@@ -18,7 +18,8 @@ module.exports = (ichabod, _config) => {
 		// Add the role field to the auth collection
 		ichabod.authentication.collection.addField('role', 'Role', {
 			type: String,
-			enum: Object.keys(config.roles)
+			enum: Object.keys(config.roles),
+			default: constants.DEFAULT_PROP
 		})
 
 		// Apply middleware for each collection to check operation permissions
