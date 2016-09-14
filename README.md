@@ -1,12 +1,12 @@
-# ichabod-perm
+# sevr-perm
 ---
 
-Add role-based permissions to Ichabod collections at the query operation level.
+Add role-based permissions to Sevr collections at the query operation level.
 
 ## Install
 
 ```
-npm install --save ichabod-perm
+npm install --save sevr-perm
 ```
 
 ---
@@ -14,9 +14,9 @@ npm install --save ichabod-perm
 ## Usage
 
 ```javascript
-const perm = require('ichabod-perm')
+const perm = require('sevr-perm')
 
-ichabod.attach(ich-perm, config)
+sevr.attach(ich-perm, config)
 ```
 
 ### Configuration
@@ -97,12 +97,6 @@ Like permissions, a default user role can also be defined using '_'.
 ```
 npm test
 ```
-
----
-
-## Contributing
-
-TODO
 
 ---
 

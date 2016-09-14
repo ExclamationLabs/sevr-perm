@@ -5,7 +5,7 @@ const Library = require('../../lib')
 chai.use(spies)
 
 const expect = chai.expect
-const IchabodMock = {
+const SevrMock = {
 	Errors: {
 		AuthError: Error
 	}
@@ -83,7 +83,7 @@ describe('Library', function() {
 	describe('getRoleCheck(user, collection, op)', function() {
 		it('should return a function', function() {
 			const config = {}
-			const library = Library(IchabodMock, config)
+			const library = Library(SevrMock, config)
 
 			expect(library.getRoleCheck({}, 'coll1', 'read')).to.be.a('function')
 		})
@@ -98,7 +98,7 @@ describe('Library', function() {
 				}
 			}
 			const getUser1 = () => ({ role: 'user' })
-			const library = Library(IchabodMock, config)
+			const library = Library(SevrMock, config)
 			const fn1 = library.getRoleCheck(getUser1, 'coll1', 'read')
 			const fn2 = library.getRoleCheck(getUser1, 'coll2', 'update')
 
@@ -117,14 +117,14 @@ describe('Library', function() {
 			}
 			const getUser1 = () => ({ role: 'user' })
 			const getUser2 = () => ({ role: 'web' })
-			const library = Library(IchabodMock, config)
+			const library = Library(SevrMock, config)
 			const fn1 = library.getRoleCheck(getUser1, 'coll1', 'create')
 			const fn2 = library.getRoleCheck(getUser2, 'coll1', 'create')
 			const fn3 = library.getRoleCheck(getUser1, 'coll2', 'create')
 
-			expect(fn1).to.throw('[ichabod-perm] User does not have "create" access for collection "coll1"')
-			expect(fn2).to.throw('[ichabod-perm] User does not have "create" access for collection "coll1"')
-			expect(fn3).to.throw('[ichabod-perm] User does not have "create" access for collection "coll2"')
+			expect(fn1).to.throw('[sevr-perm] User does not have "create" access for collection "coll1"')
+			expect(fn2).to.throw('[sevr-perm] User does not have "create" access for collection "coll1"')
+			expect(fn3).to.throw('[sevr-perm] User does not have "create" access for collection "coll2"')
 		})
 	})
 })

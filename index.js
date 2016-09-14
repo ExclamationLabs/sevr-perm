@@ -5,18 +5,18 @@ const defaultConfig = require('./default-config')
 const Library       = require('./lib')
 const constants     = require('./constants')
 
-module.exports = (ichabod, _config) => {
-	const Ichabod = ichabod.constructor
+module.exports = (sevr, _config) => {
+	const Sevr = sevr.constructor
 	const config = mergeWith({}, defaultConfig, _config)
-	const library = Library(Ichabod, config)
+	const library = Library(Sevr, config)
 
 	const getUser = () => {
-		return ichabod.authentication.user || { role: constants.DEFAULT_PROP }
+		return sevr.authentication.user || { role: constants.DEFAULT_PROP }
 	}
 
-	ichabod.authentication.events.on('auth-enabled', () => {
+	sevr.authentication.events.on('auth-enabled', () => {
 		// Add the role field to the auth collection
-		ichabod.authentication.collection.addField('role', 'Role', {
+		sevr.authentication.collection.addField('role', 'Role', {
 			type: String,
 			enum: Object.keys(config.roles),
 			default: constants.DEFAULT_PROP
@@ -24,9 +24,9 @@ module.exports = (ichabod, _config) => {
 
 		// Apply middleware for each collection to check operation permissions
 		// for the active user
-		Object.keys(ichabod.collections)
+		Object.keys(sevr.collections)
 			.map(c => {
-				return ichabod.collections[c]
+				return sevr.collections[c]
 			})
 			.forEach(collection => {
 				collection.useBefore('create', library.getRoleCheck(getUser, collection.name, 'create'))
