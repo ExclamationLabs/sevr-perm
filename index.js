@@ -5,34 +5,42 @@ const defaultConfig = require('./default-config')
 const Library       = require('./lib')
 const constants     = require('./constants')
 
-module.exports = (sevr, _config) => {
-	const Sevr = sevr.constructor
-	const config = mergeWith({}, defaultConfig, _config)
-	const library = Library(Sevr, config)
+class SevrPerm {
+	constructor(sevr, config) {
+		this.sevr = sevr
+		this.config = mergeWith({}, defaultConfig, config)
+		this.library = Library(sevr, config)
 
-	const getUser = () => {
-		return sevr.authentication.user || { role: constants.DEFAULT_PROP }
+		this.sevr.authentication.events.on('auth-enabled', this._onAuthEnable.bind(this))
 	}
 
-	sevr.authentication.events.on('auth-enabled', () => {
+	_onAuthEnable() {
+		const auth = this.sevr.authentication
+
+		const getUser = () => {
+			return auth.user || { role: constants.DEFAULT_PROP }
+		}
+
 		// Add the role field to the auth collection
-		sevr.authentication.collection.addField('role', 'Role', {
+		auth.collection.addField('role', 'Role', {
 			type: String,
-			enum: Object.keys(config.roles),
+			enum: Object.keys(this.config.roles),
 			default: constants.DEFAULT_PROP
 		})
 
 		// Apply middleware for each collection to check operation permissions
 		// for the active user
-		Object.keys(sevr.collections)
+		Object.keys(this.sevr.collections)
 			.map(c => {
-				return sevr.collections[c]
+				return this.sevr.collections[c]
 			})
 			.forEach(collection => {
-				collection.useBefore('create', library.getRoleCheck(getUser, collection.name, 'create'))
-				collection.useBefore('read', library.getRoleCheck(getUser, collection.name, 'read'))
-				collection.useBefore('update', library.getRoleCheck(getUser, collection.name, 'update'))
-				collection.useBefore('delete', library.getRoleCheck(getUser, collection.name, 'delete'))
+				collection.useBefore('create', this.library.getRoleCheck(getUser, collection.name, 'create'))
+				collection.useBefore('read', this.library.getRoleCheck(getUser, collection.name, 'read'))
+				collection.useBefore('update', this.library.getRoleCheck(getUser, collection.name, 'update'))
+				collection.useBefore('delete', this.library.getRoleCheck(getUser, collection.name, 'delete'))
 			})
-	})
+	}
 }
+
+module.exports = SevrPerm

@@ -1,3 +1,5 @@
+/*eslint-env node, mocha */
+
 const chai    = require('chai')
 const spies   = require('chai-spies')
 const Library = require('../../lib')
@@ -6,15 +8,20 @@ chai.use(spies)
 
 const expect = chai.expect
 const SevrMock = {
-	Errors: {
-		AuthError: Error
+	constructor: {
+		Errors: {
+			AuthError: Error
+		}
+	},
+	authentication: {
+		isFirstEnable: false
 	}
 }
 
 describe('Library', function() {
 	describe('getRoleConfig(roles, userRole)', function() {
 		it('should return the property from `roles` where key matches `userRole`', function() {
-			const library = Library()
+			const library = Library(SevrMock)
 			const config = {
 				admin: { test: 'admin' },
 				'_': { test: 'default' }
@@ -25,7 +32,7 @@ describe('Library', function() {
 		})
 
 		it('should return null when `userRole` does not match a property of `roles`', function() {
-			const library = Library()
+			const library = Library(SevrMock)
 			const config = {
 				admin: { test: 'admin' },
 				'_': { test: 'default' }
@@ -37,7 +44,7 @@ describe('Library', function() {
 
 	describe('getCollectionOpsForRole(role, collection)', function() {
 		it('should return an array of allowed operations for `collection`', function() {
-			const library = Library()
+			const library = Library(SevrMock)
 			const config = {
 				admin: {
 					coll1: ['create', 'read', 'update', 'delete'],
@@ -58,7 +65,7 @@ describe('Library', function() {
 		})
 
 		it('should return the opeartions from default collection when `role` has no matching collection', function() {
-			const library = Library()
+			const library = Library(SevrMock)
 			const config = {
 				admin: {
 					'_': 'r'
@@ -69,7 +76,7 @@ describe('Library', function() {
 		})
 
 		it('should return an empty array when `role` has not matching collection and no default', function() {
-			const library = Library()
+			const library = Library(SevrMock)
 			const config = {
 				admin: {
 					'coll1': 'r'
@@ -104,6 +111,25 @@ describe('Library', function() {
 
 			expect(fn1('query')).to.eql('query')
 			expect(fn2('query')).to.eql('query')
+		})
+
+		it('returned function should return query when authentication is first enabled', function() {
+			const config = {
+				roles: {
+					user: {}
+				}
+			}
+			const getUser1 = () => ({ role: 'user' })
+			const library = Library(SevrMock, config)
+			const fn1 = library.getRoleCheck(getUser1, 'coll1', 'read')
+			const fn2 = library.getRoleCheck(getUser1, 'coll2', 'update')
+
+			SevrMock.authentication.isFirstEnable = true
+
+			expect(fn1('query')).to.eql('query')
+			expect(fn2('query')).to.eql('query')
+
+			SevrMock.authentication.isFirstEnable = false
 		})
 
 		it('returned function should throw when `user` does not have `op` access on `collection`', function() {
