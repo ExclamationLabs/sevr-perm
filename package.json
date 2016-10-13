@@ -1,6 +1,6 @@
 {
   "name": "sevr-perm",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Roles and Permissions plugin for the Sevr CMS Framework",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:ExclamationLabs/sevr-perm.git"  
+    "url": "git@github.com:ExclamationLabs/sevr-perm.git"
   },
   "author": "David Street",
   "license": "MIT",
