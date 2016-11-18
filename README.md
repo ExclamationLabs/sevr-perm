@@ -1,4 +1,7 @@
 # sevr-perm
+
+[![Build Status](https://travis-ci.org/ExclamationLabs/sevr-perm.svg?branch=master)](https://travis-ci.org/ExclamationLabs/sevr-perm)
+
 ---
 
 Add role-based permissions to Sevr collections at the query operation level.
